@@ -1,5 +1,6 @@
-# Ex. No:1b 			Study of Client Server Chat Applications
-
+# Ex. No:1 (b) 		Study of Client Server Chat Applications
+## Name : JAIRAM J
+## Ref No : 25012221
 ## Aim: 
 To perform a study on Client Server Chat Applications
 ## Introduction:
@@ -73,8 +74,246 @@ Client-server chat applications are versatile tools that facilitate real-time co
 
 Client-server chat applications are foundational to real-time communication over networks. They incorporate principles of socket programming, communication protocols, and security mechanisms to provide a seamless user experience. Understanding the basics of client-server chat applications is essential for developers involved in networked application development, as they form the backbone of various collaborative communication systems. As technology evolves, chat applications continue to adapt, incorporating new features and technologies to enhance user interaction and connectivity.
 
+## CODE's..
+
+## 1) CLIENT SIDE
+
+```
+import socket
+import threading
+import time
+
+HOST = "127.0.0.1"
+PORT = 12349
+
+def start_client():
+    c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    c.connect((HOST, PORT))
+
+    def receive():
+        while True:
+            try:
+                data = c.recv(1024).decode()
+                if not data:
+                    break
+                print("🖥️ Server:", data)
+                if data.lower() == "bye":
+                    break
+            except:
+                break
+
+    def send():
+        msgs = [
+            "Hi buddy!",
+            "How are you doing today?",
+            "Can you tell me about the weather condition today?",
+            "That sounds awesome!",
+            "bye"
+        ]
+
+        for m in msgs:
+            time.sleep(1.2)
+            c.send(m.encode())
+            if m.lower() == "bye":
+                break
+
+    t1 = threading.Thread(target=receive)
+    t2 = threading.Thread(target=send)
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()
+
+    c.close()
+    print("❌ Conversation ended")
+
+start_client()
+```
+
+## 2) SERVER SIDE
+```
+import socket
+import threading
+import time
+
+HOST = "127.0.0.1"
+PORT = 12349
+
+def start_server():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+    s.listen(1)
+
+    print("🟢 Server is waiting for client...")
+    conn, addr = s.accept()
+    print("🟢 Client connected:", addr)
+
+    def receive():
+        while True:
+            try:
+                data = conn.recv(1024).decode()
+                if not data:
+                    break
+                print("👤 Client:", data)
+                if data.lower() == "bye":
+                    break
+            except:
+                break
+
+    def send():
+        msgs = [
+            "Hello Jai, welcome!",
+            "I'm doing great, thanks for asking 😊",
+            "Today's weather is pleasant with a chance of light rain 🌦️",
+            "Glad you liked it 👍",
+            "bye"
+        ]
+
+        for m in msgs:
+            time.sleep(1.2)
+            conn.send(m.encode())
+            if m.lower() == "bye":
+                break
+
+    t1 = threading.Thread(target=receive)
+    t2 = threading.Thread(target=send)
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()
+
+    conn.close()
+    s.close()
+    print("🔴 Server closed")
+
+start_server()
+```
+## FULL FUNCTIONAL CODE...
+```
+import socket
+import threading
+import time
+
+HOST = "127.0.0.1"
+PORT = 12349
+
+
+def start_server():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+    s.listen(1)
+
+    conn, addr = s.accept()
+    print("🟢 Server connected to client")
+
+    def receive():
+        while True:
+            try:
+                data = conn.recv(1024).decode()
+                if not data:
+                    break
+                print("👤 Client:", data)
+                if data.lower() == "bye":
+                    break
+            except:
+                break
+
+    def send():
+        msgs = [
+            "Hello Jai, welcome!",
+            "I'm doing great, thanks for asking 😊",
+            "Today's weather is pleasant with a chance of light rain 🌦️",
+            "Glad you liked it 👍",
+            "bye"
+        ]   
+
+        for m in msgs:
+            time.sleep(1.2)
+            conn.send(m.encode())
+            if m == "bye":
+                break
+
+    t1 = threading.Thread(target=receive)
+    t2 = threading.Thread(target=send)
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()
+
+    conn.close()
+    s.close()
+    print("🔴 Server closed")
+
+
+def start_client():
+    time.sleep(1)
+
+    c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    c.connect((HOST, PORT))
+
+    def receive():
+        while True:
+            try:
+                data = c.recv(1024).decode()
+                if not data:
+                    break
+                print("🖥️ Server:", data)
+                if data.lower() == "bye":
+                    break
+            except:
+                break
+
+    def send():
+        msgs = [
+            "Hi buddy!",
+            "How are you doing today?",
+            "Can you tell me about the weather condition today?",
+            "That sounds awesome!",
+            "tata"
+        ]
+
+        for m in msgs:
+            time.sleep(1.2)
+            c.send(m.encode())
+            if m == "bye":
+                break
+
+    t1 = threading.Thread(target=receive)
+    t2 = threading.Thread(target=send)
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()
+
+    c.close()
+    print("❌ conversation ended")
+
+
+server_thread = threading.Thread(target=start_server)
+client_thread = threading.Thread(target=start_client)
+
+server_thread.start()
+client_thread.start()
+
+server_thread.join()
+client_thread.join()
+
+print("✅ Chat session completed successfully")
+```
+
+## Output 
+<img width="1355" height="649" alt="Screenshot 2026-04-28 160211" src="https://github.com/user-attachments/assets/16bf5c61-0aa3-4465-b56b-6ba8bf3dc56e" />
+
+
 
 ## Result:
-
 Thus the study on Client Server Chat Applications has been performed
 
